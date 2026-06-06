@@ -2,12 +2,12 @@ from pathlib import Path
 import duckdb
 
 
-DB_PATH = Path("data/warehouse/operations.duckdb")
+DB_PATH = Path("../data/warehouse/operations.duckdb")
 SQL_DIR = Path("../sql")
 
 
 SQL_FILES = [
-    "00_create_schemas.sql",
+    "00_create_schema.sql",
     "01_stage_311_requests.sql",
     "02_dim_date.sql",
     "03_dim_agency.sql",
@@ -30,7 +30,7 @@ def main() -> None:
 
     con.close()
 
-    print("SQL model build complete.")
+    print("SQL model build complete")
 
 
 if __name__ == "__main__":

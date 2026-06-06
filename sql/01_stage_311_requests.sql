@@ -1,5 +1,6 @@
 CREATE OR REPLACE TABLE stage.stg_311_requests AS
 SELECT
+    unique_key AS request_id,
     TRY_CAST(NULLIF(created_date, '') AS TIMESTAMP) AS created_ts,
     TRY_CAST(NULLIF(closed_date, '') AS TIMESTAMP) AS closed_ts,
     TRY_CAST(NULLIF(due_date, '') AS TIMESTAMP) AS due_ts,
