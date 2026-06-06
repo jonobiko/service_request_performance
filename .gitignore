@@ -1,12 +1,16 @@
+# python
 .venv/
 __pycache__/
 *.pyc
 
+# env vars
 .env
 
+# local
 data/
 output/powerbi_exports/*.csv
 output/powerbi_exports/*.parquet
 
+# power bi
 *.pbix
 *.pbit
