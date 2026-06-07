@@ -24,6 +24,8 @@ SELECT
         COALESCE(s.borough, 'UNKNOWN') || '|' ||
         COALESCE(s.incident_zip, 'UNKNOWN')
     ) AS location_key,
+    s.latitude,
+    s.longitude,
 
     s.created_ts,
     s.closed_ts,

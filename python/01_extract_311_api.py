@@ -9,13 +9,16 @@ import requests
 from dotenv import load_dotenv
 from tqdm import tqdm
 
+# load_dotenv()
+
 DB_PATH = Path('../data/warehouse/operations.duckdb')
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 API_URL = 'https://nycopendata.socrata.com/resource/erm2-nwe9.csv'
-BATCH_SIZE = 50000
-START_DATE = '2024-01-01T00:00:00'
-END_DATE = '2026-01-01T00:00:00'
+API_TOKEN = os.getenv('SOCRATA_API_TOKEN')
+BATCH_SIZE = 25000
+START_DATE = '2025-01-01T00:00:00'
+END_DATE = '2026-06-06T00:00:00'
 COLUMNS = [
     'unique_key',
     'created_date',
@@ -34,11 +37,16 @@ COLUMNS = [
 ]
 
 
+def get_existing_row_count(con: duckdb.DuckDBPyConnection) -> int:
+    result = con.execute('SELECT count(*) FROM raw.raw_311_service_requests;').fetchone()
+
+    return result[0]
+
 def create_raw_table(con: duckdb.DuckDBPyConnection) -> None:
     con.execute("""
         CREATE SCHEMA IF NOT EXISTS raw;
         
-        CREATE OR REPLACE TABLE raw.raw_311_service_requests (
+        CREATE TABLE IF NOT EXISTS raw.raw_311_service_requests (
             unique_key VARCHAR,
             created_date VARCHAR,
             closed_date VARCHAR,
@@ -59,6 +67,9 @@ def create_raw_table(con: duckdb.DuckDBPyConnection) -> None:
 def fetch_batch(offset: int) -> pd.DataFrame:
     headers = {}
 
+    if API_TOKEN:
+        headers['X-App-Token'] = API_TOKEN
+
     params = {
         "$select": ",".join(COLUMNS),
         "$where": (
@@ -74,7 +85,7 @@ def fetch_batch(offset: int) -> pd.DataFrame:
         API_URL,
         params=params,
         headers=headers,
-        timeout=120,
+        timeout=(10, 300),
     )
 
     response.raise_for_status()
@@ -120,10 +131,13 @@ def main() -> None:
     con = duckdb.connect(DB_PATH)
     create_raw_table(con)
 
-    offset = 0
-    total_rows = 0
+    offset = get_existing_row_count(con)
+    total_rows = offset
 
-    with tqdm(desc="Extracting NYC 311 rows", unit="rows") as progress:
+    # offset = 0
+    # total_rows = 0
+
+    with tqdm(desc="Extracting NYC 311 data", unit=" rows") as progress:
         while True:
             df = fetch_batch(offset)
 
