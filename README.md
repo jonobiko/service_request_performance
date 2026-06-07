@@ -94,7 +94,7 @@ Results for 311 Service Requests submitted between Jan 2025 and Jun 2026:
 - Highest-volume request type: Illegal Parking (836k requests)
 - Data quality exceptions identified: 1,110 requests with closed date before open date
 
-![Service Request Performance.png](output/powerbi_exports/Service%20Request%20Performance.png)
+<img width="1836" height="1059" alt="Service Request Performance" src="https://github.com/user-attachments/assets/2b87f2bb-ec8b-46e9-b665-82d2105dc721" />
 
 ### Potential Future Enhancements
 - Add incremental refreshes instead of full reload
