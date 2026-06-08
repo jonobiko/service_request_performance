@@ -10,6 +10,7 @@ __pycache__/
 data/
 output/powerbi_exports/*.csv
 output/powerbi_exports/*.parquet
+output/powerbi_exports/*.png
 
 # power bi
 *.pbix
